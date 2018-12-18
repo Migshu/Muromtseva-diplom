@@ -4,43 +4,43 @@ window.addEventListener('DOMContentLoaded', () => {
 
     // Modals
 
-    let headerBtn = document.querySelector('.header_btn'),
-        popupEngineer = document.querySelector('.popup_engineer'),
-        popup = document.querySelector('.popup'),
-        // phoneLink = document.querySelectorAll('.phone_link'),
-        // close = document.querySelectorAll('.popup_close'),
-        bodyС = document.querySelector('body');
+    // let headerBtn = document.querySelector('.header_btn'),
+    //     popupEngineer = document.querySelector('.popup_engineer'),
+    //     popup = document.querySelector('.popup'),
+    //     // phoneLink = document.querySelectorAll('.phone_link'),
+    //     // close = document.querySelectorAll('.popup_close'),
+    //     bodyС = document.querySelector('body');
 
-    //Modal Request a call
+    // //Modal Request a call
 
-    bodyС.addEventListener('click', (e) => {
-        let target = e.target;
-        e.preventDefault();
-        if (target && target.classList.contains('phone_link')) {
-            popup.style.display = 'block';
-        }
+    // bodyС.addEventListener('click', (e) => {
+    //     let target = e.target;
+    //     e.preventDefault();
+    //     if (target && target.classList.contains('phone_link')) {
+    //         popup.style.display = 'block';
+    //     }
 
-        if (target && target.tagName == 'STRONG' || target.classList.contains('popup') || e.target.classList.contains('popup_engineer')) {
-            popup.style.display = 'none';
-            popupEngineer.style.display = 'none';
-            document.body.style.overflow = '';
-        }
-    });
+    //     if (target && target.tagName == 'STRONG' || target.classList.contains('popup') || e.target.classList.contains('popup_engineer')) {
+    //         popup.style.display = 'none';
+    //         popupEngineer.style.display = 'none';
+    //         document.body.style.overflow = '';
+    //     }
+    // });
 
-    //Modal Request an Engineer
+    // //Modal Request an Engineer
 
-    headerBtn.addEventListener('click', function () {
-        popupEngineer.style.display = 'block';
-        document.body.style.overflow = 'hidden';
-    });
+    // headerBtn.addEventListener('click', function () {
+    //     popupEngineer.style.display = 'block';
+    //     document.body.style.overflow = 'hidden';
+    // });
 
-    //setTimeout
+    // //setTimeout
 
-    setTimeout(callPopup, 60000);
+    // setTimeout(callPopup, 60000);
 
-    function callPopup() {
-        popup.style.display = 'block';
-    }
+    // function callPopup() {
+    //     popup.style.display = 'block';
+    // }
 
     // Tabs Glazing
 
@@ -77,6 +77,7 @@ window.addEventListener('DOMContentLoaded', () => {
                 }
             }
         }
+        console.log(event.target);
     });
 
 
@@ -136,68 +137,67 @@ window.addEventListener('DOMContentLoaded', () => {
         
 
     form.forEach(function(item) {
-        function sendForm(item) {
+        // function sendForm(item) {
         let input = item.querySelectorAll('input');
 
         input[1].addEventListener('input', function() {
             this.value = this.value.replace (/[^0-9]/g, '');
         });
-            item.addEventListener('submit', function(event) {
-                event.preventDefault();
-                item.appendChild(statusMessage);
-                    let formData = new FormData(item);
+        item.addEventListener('submit', function(event) {
+            event.preventDefault();
+            item.appendChild(statusMessage);
+                let formData = new FormData(item);
 
-                    let obj = {};
-                    formData.forEach(function(value, key) {
-                        obj[key] = value;
+                let obj = {};
+                formData.forEach(function(value, key) {
+                    obj[key] = value;
+                });
+                let json = JSON.stringify(obj);
+
+                console.log(item);
+
+            function postData() {
+
+                return new Promise(function(resolve,reject) {
+                    let request = new XMLHttpRequest();
+
+                    request.open('POST', 'server.php');
+
+                    request.setRequestHeader ('Content-Type', 'application/json; charset=utf-8');
+
+                    request.addEventListener('readystatechange', function() {
+                        if (request.readyState < 4) {
+                            resolve()
+                        } else if(request.readyState === 4 && request.status == 200) {
+                            resolve()
+                        } else {
+                            reject()
+                        }
                     });
-                    let json = JSON.stringify(obj);
-
-                    console.log(here);
-
-                function postData() {
-
-                    return new Promise(function(resolve,reject) {
-                        let request = new XMLHttpRequest();
-
-                        request.open('POST', 'server.php');
-
-                        request.setRequestHeader ('Content-Type', 'application/json; charset=utf-8');
-
-                        request.addEventListener('readystatechange', function() {
-                            if (request.readyState < 4) {
-                                resolve()
-                            } else if(request.readyState === 4 && request.status == 200) {
-                                resolve()
-                            } else {
-                                reject()
-                            }
-                        });
-                        
-                        request.send(json);
                     
-                    });
-                } //End postData
-
-                function clerInput() {
-                    for (let i = 0; i < input.length; i++) {
-                        input[i].value = '';
-                    }
-                }
-
-                postData(formData)
-                    .then(() => statusMessage.innerHTML = message.loading)
-                    .then(() => statusMessage.innerHTML = message.success)
-                    .catch(() => statusMessage.innerHTML = message.failure)
-                    .then(clerInput);
-
+                    request.send(json);
                 
-            });
+                });
+            } //End postData
 
-            
-        }
+            function clerInput() {
+                for (let i = 0; i < input.length; i++) {
+                    input[i].value = '';
+                }
+            }
 
-        sendForm(item);
+            postData(formData)
+                .then(() => statusMessage.innerHTML = message.loading)
+                .then(() => statusMessage.innerHTML = message.success)
+                .catch(() => statusMessage.innerHTML = message.failure)
+                .then(clerInput);
+
+        });
+
+        // }
+        
+
+        // sendForm(item);
 
     });
 
@@ -272,6 +272,65 @@ window.addEventListener('DOMContentLoaded', () => {
             overlay.style.display = 'none';
         }
     });
+
+    //Calc
+
+    let bodyP = document.querySelector('body'),
+        popupCalc =  document.querySelector('.popup_calc'),
+        balconIcons = document.querySelector('.balcon_icons'),
+        icons = balconIcons.querySelectorAll('img'),
+        bigImg = document.querySelector('.big_img'),
+        bigImgContent = bigImg.querySelectorAll('img');
+
+    
+    bodyP.addEventListener('click', (e) => {
+        let target = e.target;
+        e.preventDefault();
+        if (target && target.classList.contains('popup_calc_btn')) {
+            popupCalc.style.display = 'block';
+        }
+
+        if (target && target.tagName == 'STRONG') {
+            popupCalc.style.display = 'none';
+            // popupEngineer.style.display = 'none';
+        }
+
+        function hideBigImg(a) {
+            for (let i = a; i < bigImgContent.length; i++) {
+                bigImgContent[i].classList.remove('show');
+                bigImgContent[i].classList.add('hide');
+                icons[i].classList.remove('do_image_more');
+            }
+        }
+    
+        hideBigImg(1);
+    
+        function showBigImg(b) {
+            if (bigImgContent[b].classList.contains('hide')) {
+                bigImgContent[b].classList.remove('hide');
+                bigImgContent[b].classList.add('show');
+                icons[b].classList.toggle('do_image_more');
+            }
+        }
+    
+        balconIcons.addEventListener('click', function (e) {
+            let target = e.target;
+            if (target && target.tagName == 'IMG') {
+                for (let i = 0; i < icons.length; i++) {
+                    if (target == icons[i]) {
+                        hideBigImg(0);
+                        showBigImg(i);
+                        break;
+                    }
+                }
+            }
+            console.log(event.target); 
+        });
+    });
+
+    
+    
+
 
 
 
